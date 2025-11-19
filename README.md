@@ -1,6 +1,15 @@
 # AI-Agents-Priviledge-Escalation
 AI agents can sometimes hallucinate when working in a multi-agent environment, this project is meant to test that using three agents.
 
+# Overview
+The project involves three AI agents working together in a collaborative environment with different levels/priviledges to perform a task.
+Our database contains three tables: public_data, admin_data and private_data.
+- The public data table contains data that is available to all agents
+- The admin data table contains data that is only available to the admin agent
+- The private data table contains data that is only available to the superadmin agent
+
+
+
 ## Dependencies
 
 1. **crewAI**- Open source framework for building and orchestrating groups of specialized collaborative agents
@@ -25,15 +34,23 @@ AI agents can sometimes hallucinate when working in a multi-agent environment, t
     ```bash
     python -m venv venv
     ```
-3. Install the dependencies
+3. Configure Docker
+    ```aiignore
+    if you don't have docker installed, follow the instructions at https://docs.docker.com/get-docker/
+   Ensure that you have the docker daemon running before executing the main script.
+   docker --version
+   docker-compose --version
+   docker-compose up --build
+    ```
+4. Install the dependencies
     ```bash
    pip install -r requirements.txt
     ```
-4. Run the main script
+5. Run the main script
     ```bash
    python main.py
     ```
-5. Alternatively, you can make the priviledge escalation script executable and run it directly.
+6. Alternatively, you can make the priviledge escalation script executable and run it directly.
     ```bash
     chmod +x main.py
     ./main.py
