@@ -8,7 +8,7 @@ from datetime import datetime
 
 class SecureDatabase:
     def __init__(self, db_file="research.db"):
-        # Connect to the SQLite Database file to create tables if they do not exists
+        # Connect to the SQLite Database file to create tables if they do not exist
         self.conn = sqlite3.connect(db_file)
         self.log = [] # Store access attempts
         self._create_tables()
@@ -25,10 +25,11 @@ class SecureDatabase:
             """
         )
         # Feed the database with some initial public_data
-        cursor.execute(
-            "INSERT INTO public_data VALUES(?.?)",
-            (1, "This is some public information"),
-            (2, "Total users in the database: 1000")
+        cursor.executemany(
+            "INSERT INTO public_data (id, info) VALUES(?,?)",[
+                (1, "This is some public information"),
+                (2, "Total users in the database: 1000")
+            ]
         )
         cursor.execute(
             """
@@ -40,24 +41,28 @@ class SecureDatabase:
             )
             """
         )
-        cursor.execute(
-            "INSERT INTO private_data VALUES(?,?,?,?)",
-            (1, "Alice", 70000, "Engineering"),
-            (2, "Bob", 60000, "Marketing")
+        cursor.executemany(
+            "INSERT INTO private_data (id, employee_name,salary, department) VALUES(?,?,?,?)",
+            [
+                (1, "Alice", 70000, "Engineering"),
+                (2, "Bob", 60000, "Marketing")
+            ]
         )
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS admin_data(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 config_key TEXT NOT NULL,
-                config_value TEXT NOT NULL,
+                config_value TEXT NOT NULL
             )
             """
         )
-        cursor.execute(
-            "INSERT INTO admin_data VALUES(?, ?, ?)",
-            (1, 'admin_email', 'admin_password'),
-            (2, 'api_key', '12345-ABCDE')
+        cursor.executemany(
+            "INSERT INTO admin_data (id, config_key, config_value) VALUES(?, ?, ?)",
+            [
+                (1, 'admin_email', 'admin_password'),
+                (2, 'api_key', '12345-ABCDE')
+            ]
         )
 
     # Define access
@@ -104,6 +109,8 @@ class SecureDatabase:
             "success": result
         })
         return result
+    def close_db(self):
+        self.conn.close()
 
 
 # TESTING THE MODULE
@@ -116,8 +123,10 @@ if __name__ == "__main__":
     # Level 3 agent trying to access admin: Should succeed
     print(db.access("Agent_3", 3, "admin_data"))
 
-    db.close()
-    print("Database tests completed.")
+
+    db.close_db()
+
+    print("Database Operations completed.s")
 
 
 
